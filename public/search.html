@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar</title>
+    <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/css/search.css">
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="form-section">
+        <h1>Busca por tabela/coleção</h2>
+        <form id="formBusca">
+            <div>
+                <label for="collection">Mostrar itens da tabela/coleção...</label>
+                <select id="collection" name="collection" onchange="buscarItens()">
+                    <option value="itens">Itens</option>
+                    <option value="funcionarios">Funcionários</option>
+                    <option value="exposicoes">Exposições</option>
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <div id="results"></div>
+</body>
+<script>
+    function formatData(item, col) {
+        console.log(item);
+        html = '<li><div class="card"><div class="info">';
+
+        if (col === 'funcionarios') {
+            html += `<h1>${item.primeiroNome} ${item.sobrenome}</h1>
+                <p>Cargo: ${item.tipoFuncionario}</p>
+                <p>Matrícula: ${item.matricula}</p>`;
+
+            switch (item.tipoFuncionario) {
+                case 'gerente': html += ` <p>Responsabilidades: ${item.responsabilidades}</p> <p>Carga horária semanal: ${item.cargaHoraria}h</p>`; break;
+                case 'diretor': html += ` <p>Início da atuação: ${item.dataPromocao}</p>`; break;
+                case 'atendente': html += ` <p>Turno: ${item.turno}</p>`; break;
+            }
+        } else if (col === 'itens') {
+            html += `<h1>${item.nome}</h1>
+                <p>Estado de conservação: ${item.estadoConservacao}</p>
+                <p>Classificação: ${item.classificacao}</p>`;
+        } else {
+            html += `<h1>${item.texto}</h1>
+                <p>Descrição: ${item.descricao}</p>
+                <p>Itens: `;
+
+            const itens = item.itens.map(item => `<span>${item.nome}</span>`).join(" | ");
+
+            html += `${itens}</p>`;
+            html += `<p>Dias: `;
+            
+            item.dias.forEach(e => {
+                html += `${e} `;
+            });
+
+            html += '</p>';
+            html += `<p>Organizador: ${item.diretor?.primeiroNome} ${item.diretor?.sobrenome}</p>`;
+        }
+        
+        html += '</div>';
+        html += '<div class="conf"><button>Editar</button><button>Excluir</button></div>';
+        html += '</div></li>'
+
+        console.log(html);
+
+        return html;
+    }
+
+    function buscarItens() {
+        const collection = document.getElementById('collection').value;
+
+        fetch(`/api/search?collection=${collection}`)
+            .then(response => response.json())
+            .then(data => {
+                const resultadosDiv = document.getElementById('results');
+                if (data.length > 0) {
+                    let resultadoHTML = "<ul>";
+                    data.forEach(item => {
+                        resultadoHTML += formatData(item, collection, resultadoHTML);
+                    });
+                    resultadoHTML += "</ul>";
+                    resultadosDiv.innerHTML = resultadoHTML;
+                } else {
+                    resultadosDiv.innerHTML = "Nenhum item encontrado.";
+                }
+            })
+            .catch(error => {
+                console.error("Erro na busca:", error);
+                document.getElementById('results').innerHTML = "Erro ao buscar itens.";
+            });
+    }
+</script>
+</html>

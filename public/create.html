@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inserir Registros</title>
+    <link rel="stylesheet" href="./css/create.css">
+    <style>
+        .form-section {
+            display: none;
+        }
+    </style>
+    <script>
+        function mostrarFormulario() {
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            const tipo = document.getElementById('tipoInsercao').value;
+            if (tipo) {
+                document.getElementById(tipo).style.display = 'block';
+            }
+
+            if (tipo === 'formFuncionario') {
+                mostrarCamposEspecificos();
+            }
+        }
+
+        function mostrarCamposEspecificos() {
+            const tipoFuncionario = document.getElementById('tipoFuncionario').value;
+
+            if (tipoFuncionario === 'gerente') {
+                document.getElementById('gerenteFields').style.display = 'block';
+                document.getElementById('atendenteFields').style.display = 'none';
+                document.getElementById('diretorFields').style.display = 'none';
+            } else if (tipoFuncionario === 'atendente') {
+                document.getElementById('gerenteFields').style.display = 'none';
+                document.getElementById('atendenteFields').style.display = 'block';
+                document.getElementById('diretorFields').style.display = 'none';            
+            } else if (tipoFuncionario === 'diretor') {
+                document.getElementById('gerenteFields').style.display = 'none';
+                document.getElementById('atendenteFields').style.display = 'none';
+                document.getElementById('diretorFields').style.display = 'block';
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Inserir Dados</h1>
+
+    <label for="tipoInsercao">Escolha o tipo de inserção:</label>
+    <select id="tipoInsercao" onchange="mostrarFormulario()">
+        <option value="">Selecione...</option>
+        <option value="formItem">Item</option>
+        <option value="formFuncionario">Funcionário</option>
+        <option value="formExposicao">Exposição</option>
+    </select>
+
+    <div id="formItem" class="form-section">
+        <h2>Inserir Item</h2>
+        <form action="/item" method="post">
+            <input type="text" name="nome" placeholder="Nome" required>
+            <input type="text" name="estadoConservacao" placeholder="Estado de Conservação" required>
+            <input type="text" name="classificacao" placeholder="Classificação" required>
+            
+            <h3>Gerente</h3>
+            <label for="gerente">Selecione o Gerente:</label>
+            <select id="gerente" name="gerente">
+                <option value="">Carregando...</option>
+            </select>
+            <button type="submit">Salvar Item</button>
+        </form>
+    </div>
+
+    <div id="formFuncionario" class="form-section">
+        <h2>Inserir Funcionário</h2>
+        <form action="/funcionario" method="post">
+            <input type="text" name="cpf" placeholder="CPF" required>
+            <input type="text" name="primeiroNome" placeholder="Primeiro Nome" required>
+            <input type="text" name="sobrenome" placeholder="Sobrenome" required>
+            <input type="text" name="emails" placeholder="E-mails (separados por vírgula)" required>
+            <input type="password" name="senha" placeholder="Senha" required>
+            <input type="date" name="dataNasc" required>
+            <select id="tipoFuncionario" name="tipoFuncionario" onchange="mostrarCamposEspecificos()">
+                <option value="gerente">Gerente</option>
+                <option value="atendente">Atendente</option>
+                <option value="diretor">Diretor</option>
+            </select>
+
+            <div id="gerenteFields" style="display: none;">
+                <input type="number" name="cargaHoraria" placeholder="Carga Horária">
+                <input type="text" name="responsabilidades" placeholder="Responsabilidades">
+            </div>
+            
+            <div id="atendenteFields" style="display: none;">
+                <input type="text" name="turno" placeholder="Turno">
+            </div>
+            
+            <div id="diretorFields" style="display: none;">
+                <input type="date" name="dataPromocao" placeholder="Data de Promoção">
+            </div>
+
+            <button type="submit">Salvar Funcionário</button>
+        </form>
+    </div>
+
+    <div id="formExposicao" class="form-section">
+        <h2>Inserir Exposição</h2>
+        <form action="/exposicao" method="post">
+            <input type="text" name="texto" placeholder="Texto da Exposição" required>
+            <input type="text" name="descricao" placeholder="Descrição" required>
+
+            <h3>Dias de exposição</h3>
+            <label for="itens">Selecione os dias de exposição:</label>
+            <select id="dias" name="dias" multiple required>
+                <option value="domingo">Domingo</option>
+                <option value="segunda">Segunda-feira</option>
+                <option value="terca">Terça-feira</option>
+                <option value="quarta">Quarta-feira</option>
+                <option value="quinta">Quinta-feira</option>
+                <option value="sexta">Sexta-feira</option>
+                <option value="sabado">Sábado</option>
+            </select>
+
+            <h3>Diretor</h3>
+            <label for="diretor">Selecione o diretor:</label>
+            <select id="diretor" name="diretor">
+                <option value="">Carregando...</option>
+            </select>
+           
+            <h3>Itens</h3>
+            <label for="itens">Selecione os itens:</label>
+            <select id="itens" name="itens" multiple required>
+                <option value="">Carregando...</option>
+            </select>
+            <button type="submit">Salvar Exposição</button>
+        </form>
+    </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const response = await fetch('/api/itens');
+            const itens = await response.json(); 
+
+            const selectItens = document.getElementById('itens');
+            selectItens.innerHTML = '';
+
+            if (itens.length > 0) {
+                selectItens.appendChild(new Option('Selecione um item', ''));
+
+                itens.forEach(item => {
+                    const option = new Option(item.nome, item._id);
+                    selectItens.appendChild(option);
+                });
+            } else {
+                selectItens.appendChild(new Option('Nenhum item disponível', ''));
+            }
+        } catch (err) {
+            console.error('Erro ao carregar itens:', err);
+        }
+    })
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        const diretorSelect = document.getElementById("diretor");
+
+        try {
+            const response = await fetch("/api/diretores");
+            const diretores = await response.json();
+
+            diretorSelect.innerHTML = '<option value="">Selecione um diretor</option>';
+            diretores.forEach(diretor => {
+                const option = document.createElement("option");
+                option.value = diretor._id;
+                option.textContent = `${diretor.primeiroNome} ${diretor.sobrenome}`;
+                diretorSelect.appendChild(option);
+            });
+        } catch (error) {
+            diretorSelect.innerHTML = '<option value="">Erro ao carregar</option>';
+            console.error("Erro ao buscar diretores:", error);
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        const gerenteSelect = document.getElementById("gerente");
+
+        try {
+            const response = await fetch("/api/gerentes"); // Rota para buscar gerentes
+            const gerentes = await response.json();
+
+            gerenteSelect.innerHTML = '<option value="">Selecione um gerente</option>';
+            gerentes.forEach(gerente => {
+                const option = document.createElement("option");
+                option.value = gerente._id;
+                option.textContent = `${gerente.primeiroNome} ${gerente.sobrenome}`;
+                gerenteSelect.appendChild(option);
+            });
+        } catch (error) {
+            gerenteSelect.innerHTML = '<option value="">Erro ao carregar</option>';
+            console.error("Erro ao buscar gerentes:", error);
+        }
+    });
+
+    const form = document.querySelectorAll('form');
+
+    form.forEach(f => {
+        f.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const formData = new FormData(f);
+            const data = Object.fromEntries(formData);
+
+            const tipo = document.getElementById('tipoInsercao').value.toLowerCase();
+            const query = tipo.substring(4, 30);
+            
+            if (query === 'exposicao') {
+                data.dias = formData.getAll("dias");
+                data.itens = formData.getAll("itens");
+            }
+            
+            try {
+                const response = await fetch(`/${query}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+    
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Inserido com sucesso!');
+                } else {
+                    alert('Erro ao inserir: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao enviar dados:', error);
+            }
+        });
+    });
+</script>
+</html>

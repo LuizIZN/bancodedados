@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.barlow-condensed-thin {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+}
+  
+.barlow-condensed-extralight {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 200;
+    font-style: normal;
+}
+  
+.barlow-condensed-light {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+  
+.barlow-condensed-regular {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+  
+.barlow-condensed-medium {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+  
+.barlow-condensed-semibold {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+}
+  
+.barlow-condensed-bold {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+  
+.barlow-condensed-extrabold {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-style: normal;
+}
+  
+.barlow-condensed-black {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+}
+
+.merriweather {
+    font-family: "Merriweather", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+ul {
+    list-style-type: none;
+}
+
+ul li::before {
+    content: '';         
+    display: inline-block; 
+    width: 15px;        
+    height: 15px;        
+    background-color: #fff; 
+    border-radius: 50%;  
+    margin-right: 10px;   
+}
+
+body, html, main {
+    height: 100%;
+}
+
+body {
+    background: url(../img/red_vineyards.jpg);
+    backdrop-filter: blur(5px);
+    background-size: cover;
+    background-position: cover;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.fillet {
+    padding: 20px 0;
+    width: 100%;
+    background: #7c5120;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title p {
+    color: #fff;
+    text-align: center;
+    font-size: 1rem;
+    vertical-align: bottom;
+}
+
+.title h1 {
+    color: #fff;
+    font-size: 6rem;
+    padding: 0;
+    line-height: 1;
+}
+
+.options {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    font-size: .9rem;
+}
+
+li {
+    display: flex;
+    align-items: center;
+}
+
+.options > ul {
+    color: #fff;
+    width: 700px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
